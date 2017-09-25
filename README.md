@@ -64,6 +64,19 @@ docker run \
   grafana/grafana
 ```
 
+## Configure DNS
+
+By default Docker use `/etc/resolv.conf` from the host. You modify DNS servers by setting `GF_DNS_SERVERS=192.168.1.1,192.168.1.2`. Use `GF_DNS_OPTIONS="timeout:1,attempts:3" to modify `resolv.conf` options.
+
+```
+docker run \
+  -d \
+  -p 3000:3000 \
+  --name=grafana \
+  -e "GF_DNS_SERVERS=172.17.0.1" \
+  grafana/grafana
+```
+
 ## Running specific version of Grafana
 
 ```

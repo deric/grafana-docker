@@ -30,6 +30,30 @@ if [ ! -z ${GF_AWS_PROFILES+x} ]; then
     chmod 600 ~grafana/.aws/credentials
 fi
 
+if [ ! -z "${GF_DNS_SERVERS}" ]; then
+  dns_servers=(${GF_DNS_SERVERS}//,/ })
+  ns_servers=""
+  for ns in "${!dns_servers[@]}"
+  do
+    ns_servers+="nameserver $ns\n"
+  done
+
+  ns_options=""
+  if [ ! -z "${GF_DNS_OPTIONS}" ]; then
+    dns_options=(${GF_DNS_OPTIONS}//,/ })
+    for opt in "${!dns_options[@]}"
+    do
+      ns_options+="options $opt\n"
+    done
+  fi
+
+  cat <<EOF > /etc/resolv.conf
+${ns_servers}
+
+${ns_options}
+EOF
+fi
+
 if [ ! -z "${GF_INSTALL_PLUGINS}" ]; then
   OLDIFS=$IFS
   IFS=','
